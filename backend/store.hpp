@@ -36,10 +36,27 @@ public:
         return std::to_string(hasher(password));
     }
 
+    // Validate email format (must contain @ and . after @, and min 5 characters)
+    static bool isValidEmail(const std::string& email) {
+        if (email.size() < 5) return false;
+        auto at = email.find('@');
+        if (at == std::string::npos || at == 0) return false;
+        auto dot = email.find('.', at);
+        if (dot == std::string::npos || dot == email.size() - 1) return false;
+        return true;
+    }
+
+    // Validate password strength (minimum 6 characters)
+    static bool isValidPassword(const std::string& password) {
+        return password.size() >= 6;
+    }
+
     // Register a new user. Returns empty string on duplicate email.
     std::string registerUser(const std::string& email,
                              const std::string& password,
                              const UserProfile& profile) {
+        if (!isValidEmail(email)) return "";
+        if (!isValidPassword(password)) return "";
         const std::string normalized = normalizeEmail(email);
         if (normalized.empty()) return "";
         if (emailIndex_.count(normalized)) return "";
@@ -119,6 +136,19 @@ public:
         return true;
     }
 
+    // Delete a transaction for a user by id. Returns true on success.
+    bool deleteTransaction(std::uint64_t userId, std::uint64_t transactionId) {
+        User* user = findUserById(userId);
+        if (!user) return false;
+        auto& txs = user->transactions;
+        auto it = std::find_if(txs.begin(), txs.end(),
+            [transactionId](const Transaction& tx) { return tx.id == transactionId; });
+        if (it == txs.end()) return false;
+        txs.erase(it);
+        persist();
+        return true;
+    }
+
     // Compute dashboard aggregates from user's transactions.
     DashboardData buildDashboard(const User& user) const {
         DashboardData dash;
@@ -191,6 +221,21 @@ public:
             dash.topItemLastPrice = dash.topItems.front().lastUnitPrice;
         }
 
+        // Compute budget warning message and flag
+        if (dash.budget > 0) {
+            if (dash.budgetUsedPct >= 100) {
+                dash.isOverBudget = true;
+                int overBy = dash.spent - dash.budget;
+                dash.budgetWarning = "OVER BUDGET by NPR " + std::to_string(overBy) + "! Reduce spending immediately.";
+            } else if (dash.budgetUsedPct >= 80) {
+                dash.budgetWarning = "Warning: You have used " + std::to_string(dash.budgetUsedPct) + "% of your budget. Only NPR " + std::to_string(dash.remaining) + " remaining.";
+            } else {
+                dash.budgetWarning = "On track. NPR " + std::to_string(dash.remaining) + " remaining this month.";
+            }
+        } else {
+            dash.budgetWarning = "No budget set. Set a budget to track your spending limits.";
+        }
+
         return dash;
     }
 
@@ -237,7 +282,9 @@ public:
             if (i) out << ",";
             out << transactionToJson(dash.recentTransactions[i]);
         }
-        out << "]}";
+        out << "],";
+        out << "\"budgetWarning\":\"" << jsonEscape(dash.budgetWarning) << "\",";
+        out << "\"isOverBudget\":" << (dash.isOverBudget ? "true" : "false") << "}";
         return out.str();
     }
 

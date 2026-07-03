@@ -71,6 +71,14 @@ ft::HttpResponse handleRegister(const ft::HttpRequest& req, void* context) {
         return ft::HttpResponse::json(400,
             "{\"success\":false,\"error\":\"email and password are required\"}");
     }
+    if (!ft::FinanceStore::isValidEmail(email)) {
+        return ft::HttpResponse::json(400,
+            "{\"success\":false,\"error\":\"invalid email format (must contain @ and a domain)\"}");
+    }
+    if (!ft::FinanceStore::isValidPassword(password)) {
+        return ft::HttpResponse::json(400,
+            "{\"success\":false,\"error\":\"password must be at least 6 characters long\"}");
+    }
 
     const ft::UserProfile profile = profileFromFields(fields);
     const std::string token = ctx->store->registerUser(email, password, profile);
@@ -172,6 +180,38 @@ ft::HttpResponse handleAddExpense(const ft::HttpRequest& req, void* context) {
     return ft::HttpResponse::json(201, out.str());
 }
 
+// DELETE /api/expenses/<id> — delete a specific transaction.
+ft::HttpResponse handleDeleteExpense(const ft::HttpRequest& req, void* context) {
+    auto* ctx = static_cast<AppContext*>(context);
+    const std::uint64_t userId = userFromRequest(req, ctx);
+    if (userId == 0) {
+        return ft::HttpResponse::json(401,
+            "{\"success\":false,\"error\":\"missing or invalid token\"}");
+    }
+
+    const std::string idStr = ft::HttpServer::extractPathParam(req.path, "/api/expenses");
+    std::uint64_t txId = 0;
+    try {
+        txId = std::stoull(idStr);
+    } catch (...) {
+        return ft::HttpResponse::json(400,
+            "{\"success\":false,\"error\":\"invalid transaction ID\"}");
+    }
+
+    if (!ctx->store->deleteTransaction(userId, txId)) {
+        return ft::HttpResponse::json(404,
+            "{\"success\":false,\"error\":\"transaction not found or not owned by user\"}");
+    }
+
+    const ft::User* user = ctx->store->findUserById(userId);
+    const ft::DashboardData dash = ctx->store->buildDashboard(*user);
+
+    std::ostringstream out;
+    out << "{\"success\":true,";
+    out << "\"dashboard\":" << ctx->store->dashboardToJson(dash) << "}";
+    return ft::HttpResponse::json(200, out.str());
+}
+
 // PUT /api/profile — update onboarding profile fields.
 ft::HttpResponse handleUpdateProfile(const ft::HttpRequest& req, void* context) {
     auto* ctx = static_cast<AppContext*>(context);
@@ -261,6 +301,7 @@ int main() {
         server.addRoute("POST", "/api/expenses", handleAddExpense);
         server.addRoute("PUT", "/api/profile", handleUpdateProfile);
         server.addRoute("GET", "/api/expenses", handleListExpenses);
+        server.addRoute("DELETE", "/api/expenses", handleDeleteExpense);
         server.addRoute("OPTIONS", "/api/health", handleHealth);
         server.addRoute("OPTIONS", "/api/auth/register", handleRegister);
         server.addRoute("OPTIONS", "/api/auth/login", handleLogin);

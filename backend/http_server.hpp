@@ -88,6 +88,12 @@ public:
 
     void setContext(void* ctx) { context_ = ctx; }
 
+    // Helper to extract path parameters (e.g. from "/api/expenses/123" given prefix "/api/expenses" returns "123")
+    static std::string extractPathParam(const std::string& path, const std::string& prefix) {
+        if (path.size() <= prefix.size() + 1) return "";
+        return path.substr(prefix.size() + 1);
+    }
+
     // Blocking run loop — listens until process is stopped.
     void run() {
         const int serverFd = ::socket(AF_INET, SOCK_STREAM, 0);
@@ -223,6 +229,14 @@ private:
         auto it = routes_.find(key);
         if (it != routes_.end()) {
             return it->second(req, context_);
+        }
+
+        // Try prefix match for path-parameter routes (e.g. key: "DELETE /api/expenses/123" matches route: "DELETE /api/expenses")
+        for (const auto& route : routes_) {
+            const std::string& routeKey = route.first;
+            if (key.size() > routeKey.size() && key.substr(0, routeKey.size() + 1) == routeKey + "/") {
+                return route.second(req, context_);
+            }
         }
 
         // Prefix routes for API with path parameters are handled separately in back.cpp

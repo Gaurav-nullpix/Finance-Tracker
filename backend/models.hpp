@@ -73,6 +73,8 @@ struct DashboardData {
     std::string topItemName;
     int topItemCount = 0;
     int topItemLastPrice = 0;
+    std::string budgetWarning;
+    bool isOverBudget = false;
     std::vector<CategorySummary> categories;
     std::vector<ItemAggregate> topItems;
     std::vector<Transaction> recentTransactions;

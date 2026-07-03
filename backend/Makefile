@@ -1,5 +1,6 @@
-# Finance Tracker C++ Backend
-# Optimized build with -O2 for release performance.
+# Finance Tracker C++ Backend Build Configuration
+# Build with: make
+# Run with: make run
 
 CXX      = g++
 CXXFLAGS = -std=c++17 -O2 -Wall -Wextra -pedantic

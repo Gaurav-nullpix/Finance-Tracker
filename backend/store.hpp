@@ -223,7 +223,13 @@ public:
 
         // Compute budget warning message and flag
         if (dash.budget > 0) {
-            if (dash.budgetUsedPct >= 100) {
+            if (dash.remaining < 0) {
+                dash.isOverBudget = true;
+                int overBy = dash.spent - dash.budget;
+                dash.budgetWarning = "NO MONEY LEFT! You have exceeded your budget by NPR " + std::to_string(overBy) + ". Stop spending immediately!";
+            } else if (dash.remaining == 0) {
+                dash.budgetWarning = "BUDGET EXHAUSTED! You have used your entire budget of NPR " + std::to_string(dash.budget) + ". No more money left!";
+            } else if (dash.budgetUsedPct >= 100) {
                 dash.isOverBudget = true;
                 int overBy = dash.spent - dash.budget;
                 dash.budgetWarning = "OVER BUDGET by NPR " + std::to_string(overBy) + "! Reduce spending immediately.";

@@ -161,8 +161,13 @@ ft::HttpResponse handleAddExpense(const ft::HttpRequest& req, void* context) {
 
     const auto fields = ft::parseFlatObject(req.body);
     const std::string name = ft::fieldStr(fields, "name");
-    const std::string category = ft::fieldStr(fields, "category");
     const int amount = ft::fieldInt(fields, "amount", 0);
+
+    // Auto-detect category if not provided
+    std::string category = ft::fieldStr(fields, "category");
+    if (category.empty()) {
+        category = ft::detectCategory(name);
+    }
 
     const std::uint64_t txId = ctx->store->addTransaction(userId, name, category, amount);
     if (txId == 0) {

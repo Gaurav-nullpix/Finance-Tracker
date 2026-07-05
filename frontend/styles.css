@@ -32,6 +32,15 @@ body {
 .screen.active { display: flex; flex-direction: column; }
 
 /* ── AUTH ── */
+#screen-signin,
+#screen-signup {
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(ellipse at 60% 0%, #1a2540 0%, #0a0c12 65%);
+  position: relative;
+  overflow: hidden;
+}
+
 #screen-auth {
   align-items: center;
   justify-content: center;

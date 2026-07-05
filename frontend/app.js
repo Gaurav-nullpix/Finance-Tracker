@@ -8,7 +8,8 @@
 // ============================================================
 
 // --- Configuration & Global Constants ---
-const API_BASE = ''; // Base URL is relative to serve root (served by C++ on port 8080)
+// When opened via Live Server (or any non-8080 host), call backend directly on :8080.
+const API_BASE = window.location.port === '8080' ? '' : 'http://localhost:8080';
 
 // Visual mapping for expense categories (icons, labels, and chart styling)
 const CAT_META = {

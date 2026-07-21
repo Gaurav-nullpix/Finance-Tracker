@@ -1,16 +1,7 @@
 #pragma once
 
-// In-memory data store with O(1) average lookups and JSON file persistence.
-//
-// Time complexity summary:
-//   registerUser / findUserByEmail     → O(1) average (unordered_map)
-//   findUserByToken                    → O(1) average
-//   addTransaction                     → O(1) amortized (vector push_back)
-//   buildDashboard                     → O(n + k log k), n = transactions, k = unique items
-
 #include "json_util.hpp"
 #include "models.hpp"
-
 #include <algorithm>
 #include <chrono>
 #include <cctype>
@@ -30,13 +21,12 @@ public:
         loadFromDisk();
     }
 
-    // Demo password hash — NOT cryptographically secure; use bcrypt/argon2 in production.
+   
     static std::string hashPassword(const std::string& password) {
         std::hash<std::string> hasher;
         return std::to_string(hasher(password));
     }
 
-    // Validate email format (must contain @ and . after @, and min 5 characters)
     static bool isValidEmail(const std::string& email) {
         if (email.size() < 5) return false;
         auto at = email.find('@');
@@ -46,12 +36,9 @@ public:
         return true;
     }
 
-    // Validate password strength (minimum 6 characters)
     static bool isValidPassword(const std::string& password) {
         return password.size() >= 6;
     }
-
-    // Register a new user. Returns empty string on duplicate email.
     std::string registerUser(const std::string& email,
                              const std::string& password,
                              const UserProfile& profile) {
@@ -164,7 +151,7 @@ public:
             dash.recentTransactions.resize(10);
         }
 
-        // O(n) — single pass over all transactions.
+        //  single pass over all transactions.
         std::unordered_map<std::string, int> categoryTotals;
         std::unordered_map<std::string, ItemAggregate> itemMap;
 

@@ -1,5 +1,4 @@
-#!/usr/bin/env bash
-# Integration test script for the C++ backend API.
+
 # Run from backend/ after: make
 
 set -euo pipefail

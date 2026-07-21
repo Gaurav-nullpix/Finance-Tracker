@@ -25,20 +25,13 @@ inline std::string detectCategory(const std::string& itemName) {
     if (lower.find("book") != std::string::npos ||
         lower.find("pen") != std::string::npos ||
         lower.find("pencil") != std::string::npos ||
-        lower.find("notebook") != std::string::npos ||
-        lower.find("paper") != std::string::npos ||
-        lower.find("ink") != std::string::npos ||
+        lower.find("copy") != std::string::npos ||
         lower.find("tuition") != std::string::npos ||
-        lower.find("course") != std::string::npos ||
         lower.find("class") != std::string::npos ||
         lower.find("exam") != std::string::npos ||
         lower.find("test") != std::string::npos ||
-        lower.find("study") != std::string::npos ||
-        lower.find("education") != std::string::npos ||
-        lower.find("school") != std::string::npos ||
         lower.find("college") != std::string::npos ||
         lower.find("university") != std::string::npos ||
-        lower.find("thesis") != std::string::npos ||
         lower.find("assignment") != std::string::npos ||
         lower.find("library") != std::string::npos) {
         return "study";
@@ -49,64 +42,41 @@ inline std::string detectCategory(const std::string& itemName) {
         lower.find("noodle") != std::string::npos ||
         lower.find("rice") != std::string::npos ||
         lower.find("bread") != std::string::npos ||
-        lower.find("butter") != std::string::npos ||
         lower.find("milk") != std::string::npos ||
-        lower.find("cheese") != std::string::npos ||
         lower.find("egg") != std::string::npos ||
         lower.find("meat") != std::string::npos ||
-        lower.find("chicken") != std::string::npos ||
-        lower.find("fish") != std::string::npos ||
-        lower.find("pizza") != std::string::npos ||
-        lower.find("burger") != std::string::npos ||
         lower.find("lunch") != std::string::npos ||
         lower.find("dinner") != std::string::npos ||
         lower.find("breakfast") != std::string::npos ||
-        lower.find("snack") != std::string::npos ||
         lower.find("sweet") != std::string::npos ||
         lower.find("chocolate") != std::string::npos ||
         lower.find("biscuit") != std::string::npos ||
         lower.find("coffee") != std::string::npos ||
-        lower.find("tea") != std::string::npos ||
-        lower.find("juice") != std::string::npos) {
+        lower.find("tea") != std::string::npos) {
         return "food";
     }
 
     // Clothing keywords
     if (lower.find("shirt") != std::string::npos ||
         lower.find("pant") != std::string::npos ||
-        lower.find("trouser") != std::string::npos ||
         lower.find("dress") != std::string::npos ||
         lower.find("skirt") != std::string::npos ||
         lower.find("jacket") != std::string::npos ||
         lower.find("shoe") != std::string::npos ||
-        lower.find("boot") != std::string::npos ||
         lower.find("sock") != std::string::npos ||
         lower.find("underwear") != std::string::npos ||
-        lower.find("bra") != std::string::npos ||
         lower.find("hat") != std::string::npos ||
         lower.find("cap") != std::string::npos ||
         lower.find("scarf") != std::string::npos ||
-        lower.find("belt") != std::string::npos ||
-        lower.find("apparel") != std::string::npos) {
+        lower.find("belt") != std::string::npos ) {
         return "clothes";
     }
 
     // Transport keywords
     if (lower.find("bus") != std::string::npos ||
         lower.find("taxi") != std::string::npos ||
-        lower.find("auto") != std::string::npos ||
-        lower.find("car") != std::string::npos ||
-        lower.find("bike") != std::string::npos ||
-        lower.find("metro") != std::string::npos ||
-        lower.find("train") != std::string::npos ||
-        lower.find("flight") != std::string::npos ||
-        lower.find("petrol") != std::string::npos ||
-        lower.find("diesel") != std::string::npos ||
-        lower.find("fuel") != std::string::npos ||
-        lower.find("parking") != std::string::npos ||
-        lower.find("toll") != std::string::npos ||
-        lower.find("ticket") != std::string::npos ||
-        lower.find("ride") != std::string::npos ||
+        lower.find("indrive") != std::string::npos ||
+         lower.find("pathau") != std::string::npos ||
         lower.find("travel") != std::string::npos) {
         return "transport";
     }
@@ -180,4 +150,4 @@ struct DashboardData {
     std::vector<Transaction> recentTransactions;
 };
 
-} // namespace ft
+} 

@@ -1,13 +1,3 @@
-// ============================================================
-// KU Finance Tracker — Frontend JavaScript Bridge
-// ============================================================
-// Act as a pure communications bridge between the user interface
-// and the C++ REST API. NO calculations, aggregations, sorting,
-// or state preservation occurs here. The backend is the single
-// source of truth for all business and financial logic.
-// ============================================================
-
-// --- Configuration & Global Constants ---
 // When opened via Live Server (or any non-8080 host), call backend directly on :8080.
 const API_BASE = window.location.port === '8080' ? '' : 'http://localhost:8080';
 

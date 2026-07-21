@@ -1,11 +1,3 @@
-// Finance Tracker — C++ Backend Server
-// -------------------------------------
-// Provides a REST JSON API and serves the existing frontend static files.
-// Frontend source files are NOT modified; open http://localhost:8080 after starting.
-//
-// Build:  make
-// Run:    ./finance_server
-//
 // API base URL: http://localhost:8080/api
 
 #include "http_server.hpp"

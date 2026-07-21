@@ -1,9 +1,4 @@
 #pragma once
-
-// Minimal HTTP/1.1 server using POSIX sockets.
-// Single-threaded accept loop — fine for local development and small user counts.
-// Static files served from ../frontend/ without modifying frontend source files.
-
 #include <arpa/inet.h>
 #include <cerrno>
 #include <cstring>
